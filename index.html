@@ -163,16 +163,14 @@
 
   
 <h3>Publications</h3>
-
-<div class="card">
-  <div id="publications">Loading publications...</div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bibtex-parser-js@0.0.2/bibtexParse.min.js"></script>
-
 <script>
 fetch("FekBayPublications.bib")
-  .then(response => response.text())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("BibTeX file not found: " + response.status);
+    }
+    return response.text();
+  })
   .then(bibtex => {
     const entries = bibtexParse.toJSON(bibtex);
 
@@ -193,14 +191,8 @@ fetch("FekBayPublications.bib")
       const pdf = getField(entry, "pdf");
 
       let links = "";
-
-      if (code) {
-        links += ` [<a href="${code}" target="_blank">Codes</a>]`;
-      }
-
-      if (pdf) {
-        links += ` [<a href="${pdf}" target="_blank">PDF</a>]`;
-      }
+      if (code) links += ` [<a href="${code}" target="_blank">Codes</a>]`;
+      if (pdf) links += ` [<a href="${pdf}" target="_blank">PDF</a>]`;
 
       html += `
         <li>
@@ -218,24 +210,9 @@ fetch("FekBayPublications.bib")
   })
   .catch(error => {
     document.getElementById("publications").innerHTML =
-      "Could not load publications.";
+      "Could not load publications: " + error.message;
     console.error(error);
   });
-
-function getField(entry, fieldName) {
-  const tags = entry.entryTags || {};
-  const key = Object.keys(tags).find(
-    k => k.toLowerCase() === fieldName.toLowerCase()
-  );
-  return key ? tags[key] : "";
-}
-
-function formatAuthors(authors) {
-  return authors
-    .replace(/\s+and\s+/g, "; ")
-    .replace(/Bayisa, Fekadu L/g, "<strong>Bayisa, F. L.</strong>")
-    .replace(/Bayisa, Fekadu Lemessa/g, "<strong>Bayisa, F. L.</strong>");
-}
 </script>
 
 
