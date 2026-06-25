@@ -219,7 +219,7 @@
 
 
   <div class="card">
-  <div id="publications"></div>
+  <div id="publications">Loading publications...</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bibtex-parser-js@0.0.2/bibtexParse.min.js"></script>
@@ -231,23 +231,18 @@ fetch("FekBayPublications.bib")
     const entries = bibtexParse.toJSON(bibtex);
 
     entries.sort((a, b) => {
-      return (b.entryTags.year || 0) - (a.entryTags.year || 0);
+      const yearA = Number(getField(a, "year")) || 0;
+      const yearB = Number(getField(b, "year")) || 0;
+      return yearB - yearA;
     });
 
     let html = "<ol>";
 
     entries.forEach(entry => {
-      const f = entry.entryTags;
-
-      let authors = f.author || "";
-      authors = authors
-        .replace(/ and /g, "; ")
-        .replace(/Bayisa, Fekadu L/g, "<strong>Bayisa, F. L.</strong>")
-        .replace(/Bayisa, Fekadu Lemessa/g, "<strong>Bayisa, F. L.</strong>");
-
-      let title = f.title || "";
-      let journal = f.journal || f.school || "";
-      let year = f.year || "";
+      const authors = formatAuthors(getField(entry, "author"));
+      const title = getField(entry, "title");
+      const journal = getField(entry, "journal") || getField(entry, "school") || "";
+      const year = getField(entry, "year");
 
       html += `
         <li>
@@ -261,9 +256,28 @@ fetch("FekBayPublications.bib")
 
     html += "</ol>";
     document.getElementById("publications").innerHTML = html;
+  })
+  .catch(error => {
+    document.getElementById("publications").innerHTML =
+      "Could not load publications.";
+    console.error(error);
   });
-</script>
 
+function getField(entry, fieldName) {
+  const tags = entry.entryTags || {};
+  const key = Object.keys(tags).find(
+    k => k.toLowerCase() === fieldName.toLowerCase()
+  );
+  return key ? tags[key] : "";
+}
+
+function formatAuthors(authors) {
+  return authors
+    .replace(/\s+and\s+/g, "; ")
+    .replace(/Bayisa, Fekadu L/g, "<strong>Bayisa, F. L.</strong>")
+    .replace(/Bayisa, Fekadu Lemessa/g, "<strong>Bayisa, F. L.</strong>");
+}
+</script>
   
 <h3>Talks</h3>
   
