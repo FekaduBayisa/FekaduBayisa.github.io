@@ -217,6 +217,53 @@
 <script src="https://bibbase.org/show?bib=https://raw.githubusercontent.com/FekaduBayisa/fekadubayisa.github.io/main/FekBayPublications.bib&jsonp=1&theme=default"></script>
 </div>
 
+
+  <div class="card">
+  <div id="publications"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bibtex-parser-js@0.0.2/bibtexParse.min.js"></script>
+
+<script>
+fetch("FekBayPublications.bib")
+  .then(response => response.text())
+  .then(bibtex => {
+    const entries = bibtexParse.toJSON(bibtex);
+
+    entries.sort((a, b) => {
+      return (b.entryTags.year || 0) - (a.entryTags.year || 0);
+    });
+
+    let html = "<ol>";
+
+    entries.forEach(entry => {
+      const f = entry.entryTags;
+
+      let authors = f.author || "";
+      authors = authors
+        .replace(/ and /g, "; ")
+        .replace(/Bayisa, Fekadu L/g, "<strong>Bayisa, F. L.</strong>")
+        .replace(/Bayisa, Fekadu Lemessa/g, "<strong>Bayisa, F. L.</strong>");
+
+      let title = f.title || "";
+      let journal = f.journal || f.school || "";
+      let year = f.year || "";
+
+      html += `
+        <li>
+          ${authors}.
+          <em>${title}</em>.
+          ${journal}.
+          ${year}.
+        </li>
+      `;
+    });
+
+    html += "</ol>";
+    document.getElementById("publications").innerHTML = html;
+  });
+</script>
+
   
 <h3>Talks</h3>
   
