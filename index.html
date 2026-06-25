@@ -166,10 +166,20 @@
 
 <div id="publications">Loading publications...</div>
 
-<!-- Load the BibTeX parser -->
 <script src="https://cdn.jsdelivr.net/npm/bibtex-parse-js@0.0.24/bibtexParse.min.js"></script>
 
 <script>
+function getField(entry, field) {
+  return entry.entryTags && entry.entryTags[field]
+    ? entry.entryTags[field]
+    : "";
+}
+
+function formatAuthors(authors) {
+  if (!authors) return "";
+  return authors.replace(/ and /g, ", ");
+}
+
 fetch("FekBayPublications.bib")
   .then(response => {
     if (!response.ok) {
@@ -191,21 +201,28 @@ fetch("FekBayPublications.bib")
     entries.forEach(entry => {
       const authors = formatAuthors(getField(entry, "author"));
       const title = getField(entry, "title");
-      const journal = getField(entry, "journal") || getField(entry, "school") || "";
+      const journal =
+        getField(entry, "journal") ||
+        getField(entry, "booktitle") ||
+        getField(entry, "school") ||
+        "";
+
       const year = getField(entry, "year");
       const code = getField(entry, "code");
       const pdf = getField(entry, "pdf");
+      const url = getField(entry, "url");
 
       let links = "";
       if (code) links += ` [<a href="${code}" target="_blank">Code</a>]`;
       if (pdf) links += ` [<a href="${pdf}" target="_blank">PDF</a>]`;
+      if (url) links += ` [<a href="${url}" target="_blank">Link</a>]`;
 
       html += `
         <li>
           ${authors}.
           <em>${title}</em>.
-          ${journal}.
-          ${year}.
+          ${journal ? journal + "." : ""}
+          ${year ? year + "." : ""}
           ${links}
         </li>
       `;
