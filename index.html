@@ -161,64 +161,10 @@
     </ul>
   </div>
 
-<h3>Publications</h3>
   
-<div class="card">
-<ul>
-   <li>
-  Modelling Home Range and Intraspecific Spatial Interaction in Wild Animal Populations
-  [<a href="https://github.com/FekaduBayisa/Black-Bear-Data-Modelling" target="_blank">Codes</a>]
-  [<a href="https://arxiv.org/abs/2411.01694" target="_blank">PDF</a>]
-</li>
-
-  <li>
-    Regularised Semi-parametric Composite Likelihood Intensity Modelling of a Swedish Spatial Ambulance Call Point Pattern
-    <a href="https://link.springer.com/article/10.1007/s13253-023-00534-5" target="_blank">[PDF]</a>
-  </li>
-
-  <li>
-    Adaptive Algorithm for Sparse Signal Recovery
-    <a href="https://www.sciencedirect.com/science/article/abs/pii/S1051200419300077" target="_blank">[PDF]</a>
-  </li>
-
-  <li>
-    Statistical Learning in Computed Tomography Image Estimation
-    <a href="https://pubmed.ncbi.nlm.nih.gov/30242845/" target="_blank">[PDF]</a>
-  </li>
-
-  <li>
-    Large-scale Modelling and Forecasting of Ambulance Calls in Northern Sweden Using Spatio-temporal Log-Gaussian Cox Processes
-    <a href="https://www.sciencedirect.com/science/article/pii/S2211675320300658" target="_blank">[PDF]</a>
-  </li>
-
-  <li>
-    Comparison of Hidden Markov Chain Models and Hidden Markov Random Field Models in Estimation of Computed Tomography Images
-    <a href="https://www.tandfonline.com/doi/full/10.1080/23737484.2018.1473059" target="_blank">[PDF]</a>
-  </li>
-
-  <li>
-    Model-based Computed Tomography Image Estimation: Partitioning Approach
-    <a href="https://www.tandfonline.com/doi/full/10.1080/02664763.2019.1606169" target="_blank">[PDF]</a>
-  </li>
-
-  <li>
-    Spatial Point Process via Regularisation Modelling of Ambulance Call Risk
-    <a href="https://arxiv.org/abs/2207.07814" target="_blank">[PDF]</a>
-  </li>
-
-  <li>
-    Statistical Methods in Medical Image Estimation and Sparse Signal Recovery
-    <a href="https://www.diva-portal.org/smash/get/diva2:1206407/FULLTEXT02" target="_blank">[PDF]</a>
-  </li>
-</ul>
-</div>
+<h3>Publications</h3>
 
 <div class="card">
-<script src="https://bibbase.org/show?bib=https://raw.githubusercontent.com/FekaduBayisa/fekadubayisa.github.io/main/FekBayPublications.bib&jsonp=1&theme=default"></script>
-</div>
-
-
-  <div class="card">
   <div id="publications">Loading publications...</div>
 </div>
 
@@ -243,6 +189,18 @@ fetch("FekBayPublications.bib")
       const title = getField(entry, "title");
       const journal = getField(entry, "journal") || getField(entry, "school") || "";
       const year = getField(entry, "year");
+      const code = getField(entry, "code");
+      const pdf = getField(entry, "pdf");
+
+      let links = "";
+
+      if (code) {
+        links += ` [<a href="${code}" target="_blank">Codes</a>]`;
+      }
+
+      if (pdf) {
+        links += ` [<a href="${pdf}" target="_blank">PDF</a>]`;
+      }
 
       html += `
         <li>
@@ -250,6 +208,7 @@ fetch("FekBayPublications.bib")
           <em>${title}</em>.
           ${journal}.
           ${year}.
+          ${links}
         </li>
       `;
     });
@@ -278,6 +237,8 @@ function formatAuthors(authors) {
     .replace(/Bayisa, Fekadu Lemessa/g, "<strong>Bayisa, F. L.</strong>");
 }
 </script>
+
+
   
 <h3>Talks</h3>
   
